@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": ["${env.IDF_PATH}/components/"],
+      "browse": {
+        "limitSymbolsToIncludedHeaders": true,
+        "databaseFilename": ""
+      }
+    }
+  ]
+}

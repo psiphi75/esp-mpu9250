@@ -1,0 +1,16 @@
+menu "MPU9250 Configuration"
+
+config CALIBRATION_MODE
+    bool "When running, go into calibration mode."
+    default n
+    help
+      Each MPU9250 needs to be calibrated before it will work properly.  When enabled, this will go through
+      a set of calibration instructions.
+
+config SAMPLE_RATE_Hz
+    int "The sample rate of the MPU9250, in Hz"
+    default 200
+    help
+      This has been tested with 200 Hz, although all possible options should include 50, 100, 200 and 250 Hz.
+
+endmenu
