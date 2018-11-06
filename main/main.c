@@ -31,10 +31,10 @@
 
 #include "driver/i2c.h"
 
-#include "MadgwickAHRS.c"
-#include "mpu9250.h"
-#include "calibrate.h"
-#include "common.h"
+#include "../components/ahrs/MadgwickAHRS.h"
+#include "../components/mpu9250/mpu9250.h"
+#include "../components/mpu9250/calibrate.h"
+#include "../components/mpu9250/common.h"
 
 static const char *TAG = "main";
 
