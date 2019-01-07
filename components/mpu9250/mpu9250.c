@@ -66,7 +66,7 @@ esp_err_t i2c_mpu9250_init(calibration_t *c)
   vTaskDelay(10 / portTICK_RATE_MS);
 
   // define accel range
-  ESP_ERROR_CHECK(set_full_scale_accel_range(MPU9250_GYRO_FS_250));
+  ESP_ERROR_CHECK(set_full_scale_accel_range(MPU9250_ACCEL_SCALE_FACTOR_0));
   vTaskDelay(10 / portTICK_RATE_MS);
 
   // disable sleepEnabled
@@ -249,11 +249,6 @@ esp_err_t get_accel_gyro(vector_t *va, vector_t *vg)
 
   // Gyroscope - bytes 9:13
   align_gryo(&bytes[8], vg);
-
-  // ESP_LOGW(TAG, "acc raw -> %02x %02x %02x %02x %02x %02x", bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5]);
-  // ESP_LOGW(TAG, "acc     -> %0.4f %0.4f %0.4f", va->x, va->y, va->z);
-  // ESP_LOGW(TAG, "gyr raw -> %02x %02x %02x %02x %02x %02x", bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13]);
-  // ESP_LOGW(TAG, "gyr     -> %0.4f %0.4f %0.4f", vg->x, vg->y, vg->z);
 
   return ESP_OK;
 }

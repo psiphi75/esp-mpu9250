@@ -1,12 +1,16 @@
 {
-  "configurations": [
-    {
-      "name": "Linux",
-      "includePath": ["${env.IDF_PATH}/components/"],
-      "browse": {
-        "limitSymbolsToIncludedHeaders": true,
-        "databaseFilename": ""
-      }
-    }
-  ]
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${env.IDF_PATH}/components/"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
 }
