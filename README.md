@@ -43,6 +43,20 @@ calibration requirements:
 
 See the `calibration.c` file for details.
 
+### Using the results
+You should consider increasing the monitor window's print buffer so that the large amount of printing for magnetometer does not override the other calibration output.
+
+
+Open the project configuration menu (`idf.py menuconfig`). Then go into `Example Configuration` menu.
+
+Open the project configuration menu (`idf.py menuconfig`). Then go into `Example Configuration` menu.
+
+- You can choose whether or not to save command history into flash in `Store command history in flash` option.
+- You can set the maximum number of command line arguments under `Maximum number of command line arguments` option.
+- You can set the command line buffer length under `Command line buffer length` option.
+
+After running the calibration, **copy and paste the values printed by the calibration tool to main.c's cal variable.**
+
 ## Build and Flash
 
 Build the project and flash it to the board, then run monitor tool to view serial output:
