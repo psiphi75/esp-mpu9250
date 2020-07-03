@@ -46,9 +46,6 @@ See the `calibration.c` file for details.
 ### Using the results
 You should consider increasing the monitor window's print buffer so that the large amount of printing for magnetometer does not override the other calibration output.
 
-
-Open the project configuration menu (`idf.py menuconfig`). Then go into `Example Configuration` menu.
-
 Open the project configuration menu (`idf.py menuconfig`). Then go into `Example Configuration` menu.
 
 - You can choose whether or not to save command history into flash in `Store command history in flash` option.
