@@ -38,7 +38,7 @@
 #define NACK_VAL 0x1               /*!< I2C nack value */
 #define LAST_NACK_VAL 0x2          /*!< I2C last_nack value */
 
-#define I2C_FREQ_HZ 400000 /* I2C master clock frequency */
+#define I2C_FREQ_HZ 200000 /* I2C master clock frequency */
 #define I2C_TX_BUF_DISABLE 0 /* I2C master do not need buffer */
 #define I2C_RX_BUF_DISABLE 0
 
