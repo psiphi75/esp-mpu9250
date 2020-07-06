@@ -54,7 +54,7 @@ esp_err_t i2c_mpu9250_init(calibration_t *c)
 
   ESP_LOGD(TAG, "i2c_mpu9250_init");
 
-  ESP_ERROR_CHECK(i2c_write_bit(I2C_MASTER_NUM, MPU9250_I2C_ADDR, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_DEVICE_RESET_BIT, 1))
+  ESP_ERROR_CHECK(i2c_write_bit(I2C_MASTER_NUM, MPU9250_I2C_ADDR, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_DEVICE_RESET_BIT, 1));
   vTaskDelay(10 / portTICK_RATE_MS);
 
   // define clock source
@@ -66,14 +66,14 @@ esp_err_t i2c_mpu9250_init(calibration_t *c)
   vTaskDelay(10 / portTICK_RATE_MS);
 
   // define accel range
-  ESP_ERROR_CHECK(set_full_scale_accel_range(MPU9250_ACCEL_SCALE_FACTOR_0));
+  ESP_ERROR_CHECK(set_full_scale_accel_range(MPU9250_ACCEL_FS_4));
   vTaskDelay(10 / portTICK_RATE_MS);
 
   // disable sleepEnabled
   ESP_ERROR_CHECK(set_sleep_enabled(false));
   vTaskDelay(10 / portTICK_RATE_MS);
 
-  ESP_LOGD(TAG, "END of MPU9150 initialization");
+  ESP_LOGD(TAG, "END of MPU9250 initialization");
 
   ESP_ERROR_CHECK(enable_magnetometer());
 
@@ -105,13 +105,13 @@ float get_gyro_inv_scale(uint8_t scale_factor)
   switch (scale_factor)
   {
   case MPU9250_GYRO_FS_250:
-    return 1.0 / 131.0;
+    return 1.0 / MPU9250_GYRO_SCALE_FACTOR_0;
   case MPU9250_GYRO_FS_500:
-    return 1.0 / 65.5;
+    return 1.0 / MPU9250_GYRO_SCALE_FACTOR_1;
   case MPU9250_GYRO_FS_1000:
-    return 1.0 / 32.8;
+    return 1.0 / MPU9250_GYRO_SCALE_FACTOR_2;
   case MPU9250_GYRO_FS_2000:
-    return 1.0 / 16.4;
+    return 1.0 / MPU9250_GYRO_SCALE_FACTOR_3;
   default:
     ESP_LOGE(TAG, "get_gyro_inv_scale(): invalid value (%d)", scale_factor);
     return 1;
@@ -129,13 +129,13 @@ float get_accel_inv_scale(uint8_t scale_factor)
   switch (scale_factor)
   {
   case MPU9250_ACCEL_FS_2:
-    return 1.0 / 16384.0;
+    return 1.0 / MPU9250_ACCEL_SCALE_FACTOR_0;
   case MPU9250_ACCEL_FS_4:
-    return 1.0 / 8192.0;
+    return 1.0 / MPU9250_ACCEL_SCALE_FACTOR_1;
   case MPU9250_ACCEL_FS_8:
-    return 1.0 / 4096.0;
+    return 1.0 / MPU9250_ACCEL_SCALE_FACTOR_2;
   case MPU9250_ACCEL_FS_16:
-    return 1.0 / 2048.0;
+    return 1.0 / MPU9250_ACCEL_SCALE_FACTOR_3;
   default:
     ESP_LOGE(TAG, "get_accel_inv_scale(): invalid value (%d)", scale_factor);
     return 1;
