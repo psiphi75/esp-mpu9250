@@ -43,7 +43,6 @@ static const char *TAG = "main";
 calibration_t cal = {
     .mag_offset = {.x = 25.183594, .y = 57.519531, .z = -62.648438},
     .mag_scale = {.x = 1.513449, .y = 1.557811, .z = 1.434039},
-
     .accel_offset = {.x = 0.020900, .y = 0.014688, .z = -0.002580},
     .accel_scale_lo = {.x = -0.992052, .y = -0.990010, .z = -1.011147},
     .accel_scale_hi = {.x = 1.013558, .y = 1.011903, .z = 1.019645},

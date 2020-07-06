@@ -23,8 +23,8 @@
 #include "mpu9250.h"
 #include "ak8963.h"
 
-#define I2C_MASTER_SCL_IO 2      /*!< gpio number for I2C master clock */
-#define I2C_MASTER_SDA_IO 14     /*!< gpio number for I2C master data  */
+#define I2C_MASTER_SCL_IO 22      /*!< gpio number for I2C master clock */
+#define I2C_MASTER_SDA_IO 21     /*!< gpio number for I2C master data  */
 #define I2C_MASTER_NUM I2C_NUM_0 /*!< I2C port number for master dev */
 
 static const char *TAG = "mpu9250";
@@ -54,7 +54,7 @@ esp_err_t i2c_mpu9250_init(calibration_t *c)
 
   ESP_LOGD(TAG, "i2c_mpu9250_init");
 
-  ESP_ERROR_CHECK(i2c_write_bit(I2C_MASTER_NUM, MPU9250_I2C_ADDR, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_DEVICE_RESET_BIT, 1))
+  ESP_ERROR_CHECK(i2c_write_bit(I2C_MASTER_NUM, MPU9250_I2C_ADDR, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_DEVICE_RESET_BIT, 1));
   vTaskDelay(10 / portTICK_RATE_MS);
 
   // define clock source

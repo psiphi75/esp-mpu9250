@@ -5,5 +5,8 @@
 
 PROJECT_NAME := mpu9250
 
+EXTRA_COMPONENT_DIRS := components/ahrs
+						components/mpu9250
+
 include $(IDF_PATH)/make/project.mk
 
