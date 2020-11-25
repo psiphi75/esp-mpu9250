@@ -304,7 +304,7 @@ void calibrate_mag(void)
       .x = (v_max.x - v_min.x) / 2.0,
       .y = (v_max.y - v_min.y) / 2.0,
       .z = (v_max.z - v_min.z) / 2.0};
-  float avg_radius = (v_avg.x + v_avg.y + v_avg.z) / 2.0;
+  float avg_radius = (v_avg.x + v_avg.y + v_avg.z) / 3.0;
   vector_t v_scale = {
       .x = avg_radius / v_avg.x,
       .y = avg_radius / v_avg.y,
