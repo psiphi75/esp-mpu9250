@@ -38,6 +38,10 @@
 #define NACK_VAL 0x1               /*!< I2C nack value */
 #define LAST_NACK_VAL 0x2          /*!< I2C last_nack value */
 
+#define I2C_FREQ_HZ 200000 /* I2C master clock frequency */
+#define I2C_TX_BUF_DISABLE 0 /* I2C master do not need buffer */
+#define I2C_RX_BUF_DISABLE 0
+
 /**
  * @brief i2c master initialization
  */
@@ -50,8 +54,9 @@ esp_err_t i2c_master_init(uint8_t i2c_num, uint8_t gpio_sda, uint8_t gpio_scl)
   conf.sda_pullup_en = 0;
   conf.scl_io_num = gpio_scl;
   conf.scl_pullup_en = 0;
-  ESP_ERROR_CHECK(i2c_driver_install(i2c_master_port, conf.mode));
+  conf.master.clk_speed = I2C_FREQ_HZ;
   ESP_ERROR_CHECK(i2c_param_config(i2c_master_port, &conf));
+  ESP_ERROR_CHECK(i2c_driver_install(i2c_master_port, conf.mode,I2C_RX_BUF_DISABLE, I2C_TX_BUF_DISABLE,0));
   return ESP_OK;
 }
 
