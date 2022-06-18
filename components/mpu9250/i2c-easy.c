@@ -49,6 +49,7 @@ esp_err_t i2c_master_init(uint8_t i2c_num, uint8_t gpio_sda, uint8_t gpio_scl)
 {
   int i2c_master_port = i2c_num;
   i2c_config_t conf;
+  memset(&conf, 0, sizeof(i2c_config_t));
   conf.mode = I2C_MODE_MASTER;
   conf.sda_io_num = gpio_sda;
   conf.sda_pullup_en = 0;
