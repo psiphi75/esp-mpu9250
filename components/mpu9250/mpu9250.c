@@ -30,7 +30,7 @@
 static const char *TAG = "mpu9250";
 
 static bool initialised = false;
-calibration_t *cal;
+static calibration_t *cal;
 
 static float gyro_inv_scale = 1.0;
 static float accel_inv_scale = 1.0;
