@@ -137,7 +137,7 @@ static void imu_task(void *arg)
 #endif
 
   // Exit
-  vTaskDelay(100 / portTICK_RATE_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
   i2c_driver_delete(I2C_MASTER_NUM);
 
   vTaskDelete(NULL);
@@ -145,6 +145,6 @@ static void imu_task(void *arg)
 
 void app_main(void)
 {
-  //start i2c task
+  // start i2c task
   xTaskCreate(imu_task, "imu_task", 2048, NULL, 10, NULL);
 }

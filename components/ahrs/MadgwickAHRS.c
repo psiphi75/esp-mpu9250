@@ -18,6 +18,10 @@
 #include "MadgwickAHRS.h"
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI (3.14159265358979323846)
+#endif
+
 //---------------------------------------------------------------------------------------------------
 // Variable definitions
 
@@ -207,26 +211,11 @@ void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, flo
   q3 += qDot4 * (1.0f / sampleFreq);
 
   // Normalise quaternion
-  recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+  recipNorm = 1.0 / sqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
   q0 *= recipNorm;
   q1 *= recipNorm;
   q2 *= recipNorm;
   q3 *= recipNorm;
-}
-
-//---------------------------------------------------------------------------------------------------
-// Fast inverse square-root
-// See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
-
-float invSqrt(float x)
-{
-  float halfx = 0.5f * x;
-  float y = x;
-  long i = *(long *)&y;
-  i = 0x5f3759df - (i >> 1);
-  y = *(float *)&i;
-  y = y * (1.5f - (halfx * y * y));
-  return y;
 }
 
 /**
@@ -234,15 +223,15 @@ float invSqrt(float x)
  * in the following link: http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
  * @return {object} Normalised vector - {x, y, z, angle}
  */
-void MadgwickGetVector(float *angle, float *x, float *y, float *z)
-{
-  float ang = 2.0 * acos(q0);
-  float sin_angle = sin(ang / 2.0);
-  *angle = ang;
-  *x = q1 / sin_angle;
-  *y = q2 / sin_angle;
-  *z = q3 / sin_angle;
-};
+// void MadgwickGetVector(float *angle, float *x, float *y, float *z)
+// {
+//   float ang = 2.0 * acos(q0);
+//   float sin_angle = sin(ang / 2.0);
+//   *angle = ang;
+//   *x = q1 / sin_angle;
+//   *y = q2 / sin_angle;
+//   *z = q3 / sin_angle;
+// };
 
 float norm_angle_0_2pi(float a)
 {

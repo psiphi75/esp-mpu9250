@@ -48,7 +48,7 @@ esp_err_t ak8963_init(i2c_port_t i2c_number, calibration_t *c)
   if (id & AK8963_WHO_AM_I_RESPONSE)
   {
     ak8963_get_sensitivity_adjustment_values();
-    vTaskDelay(10 / portTICK_RATE_MS);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
     ak8963_set_cntl(AK8963_CNTL_MODE_CONTINUE_MEASURE_2);
     initialised = true;
     return ESP_OK;
@@ -93,7 +93,7 @@ esp_err_t ak8963_get_sensitivity_adjustment_values()
   if (ret != ESP_OK)
     return ret;
 
-  vTaskDelay(20 / portTICK_RATE_MS);
+  vTaskDelay(20 / portTICK_PERIOD_MS);
 
   uint8_t xi, yi, zi;
   ret = i2c_read_byte(i2c_num, AK8963_ADDRESS, AK8963_ASAX, &xi);
@@ -149,7 +149,7 @@ esp_err_t ak8963_get_mag_raw(uint8_t bytes[6])
   // next reading is fresh.  If we do it before without a pause, only 1 in 15 readings will
   // be fresh.  The setTimeout ensures this read goes to the back of the queue, once all other
   // computation is done.
-  vTaskDelay(1 / portTICK_RATE_MS);
+  vTaskDelay(1 / portTICK_PERIOD_MS);
   uint8_t b;
   i2c_read_byte(i2c_num, AK8963_ADDRESS, AK8963_ST2, &b);
 

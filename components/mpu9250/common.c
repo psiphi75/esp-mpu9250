@@ -35,7 +35,7 @@ void pause(void)
   int32_t elapsed = end - start;
   if (elapsed < SAMPLE_INTERVAL_MS)
   {
-    vTaskDelay((SAMPLE_INTERVAL_MS - elapsed) / portTICK_RATE_MS);
+    vTaskDelay((SAMPLE_INTERVAL_MS - elapsed) / portTICK_PERIOD_MS);
   }
   start = xTaskGetTickCount() * 1000 / configTICK_RATE_HZ;
 }

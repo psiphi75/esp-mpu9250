@@ -45,7 +45,7 @@ void wait(void)
   {
     printf("Starting in %d seconds     \r", i);
     fflush(stdout);
-    vTaskDelay(1000 / portTICK_RATE_MS);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
   printf("\n");
 }
@@ -206,7 +206,7 @@ void calibrate_accel_axis(int axis, int dir)
       offset.y += va.y;
     }
 
-    vTaskDelay(5 / portTICK_RATE_MS);
+    vTaskDelay(5 / portTICK_PERIOD_MS);
   }
 }
 
@@ -297,7 +297,7 @@ void calibrate_mag(void)
 
     printf(" %0.3f    %0.3f    %0.3f    %0.3f   %0.3f   %0.3f   %0.3f   %0.3f   %0.3f       \r", vm.x, vm.y, vm.z, v_min.x, v_min.y, v_min.z, v_max.x, v_max.y, v_max.z);
 
-    vTaskDelay(10 / portTICK_RATE_MS);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
   }
 
   vector_t v_avg = {

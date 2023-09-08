@@ -1,10 +1,9 @@
 {
-  "version": "0.1.0",
+  "version": "2.0.0",
   "command": "bash",
-  "args": ["-c"],
-  "isShellCommand": true,
-  "showOutput": "always",
-  "suppressTaskName": true,
+  "args": [
+    "-c"
+  ],
   "options": {
     "cwd": "${workspaceRoot}",
     "env": {
@@ -14,9 +13,12 @@
   },
   "tasks": [
     {
-      "taskName": "build app",
-      "args": ["make app"],
-      "isBuildCommand": true,
+      "label": "build app",
+      "type": "shell",
+      "args": [
+        "-c",
+        "make app"
+      ],
       "problemMatcher": {
         "owner": "cpp",
         "fileLocation": "absolute",
@@ -28,19 +30,38 @@
           "severity": 4,
           "message": 5
         }
+      },
+      "group": {
+        "_id": "build",
+        "isDefault": false
       }
     },
     {
-      "taskName": "clean app",
-      "args": ["make app-clean"]
+      "label": "clean app",
+      "type": "shell",
+      "args": [
+        "-c",
+        "make app-clean"
+      ],
+      "problemMatcher": []
     },
     {
-      "taskName": "monitor",
-      "args": ["make monitor"]
+      "label": "monitor",
+      "type": "shell",
+      "args": [
+        "-c",
+        "make monitor"
+      ],
+      "problemMatcher": []
     },
     {
-      "taskName": "flash app",
-      "args": ["make app-flash"]
+      "label": "flash app",
+      "type": "shell",
+      "args": [
+        "-c",
+        "make app-flash"
+      ],
+      "problemMatcher": []
     }
   ]
 }

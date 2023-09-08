@@ -40,7 +40,7 @@ static esp_err_t enable_magnetometer(void);
 esp_err_t i2c_mpu9250_init(calibration_t *c)
 {
   ESP_LOGI(TAG, "Initializating MPU9250");
-  vTaskDelay(100 / portTICK_RATE_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
 
   i2c_master_init(I2C_MASTER_NUM, I2C_MASTER_SDA_IO, I2C_MASTER_SCL_IO);
 
@@ -55,23 +55,23 @@ esp_err_t i2c_mpu9250_init(calibration_t *c)
   ESP_LOGD(TAG, "i2c_mpu9250_init");
 
   ESP_ERROR_CHECK(i2c_write_bit(I2C_MASTER_NUM, MPU9250_I2C_ADDR, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_DEVICE_RESET_BIT, 1));
-  vTaskDelay(10 / portTICK_RATE_MS);
+  vTaskDelay(10 / portTICK_PERIOD_MS);
 
   // define clock source
   ESP_ERROR_CHECK(set_clock_source(MPU9250_CLOCK_PLL_XGYRO));
-  vTaskDelay(10 / portTICK_RATE_MS);
+  vTaskDelay(10 / portTICK_PERIOD_MS);
 
   // define gyro range
   ESP_ERROR_CHECK(set_full_scale_gyro_range(MPU9250_GYRO_FS_250));
-  vTaskDelay(10 / portTICK_RATE_MS);
+  vTaskDelay(10 / portTICK_PERIOD_MS);
 
   // define accel range
   ESP_ERROR_CHECK(set_full_scale_accel_range(MPU9250_ACCEL_FS_4));
-  vTaskDelay(10 / portTICK_RATE_MS);
+  vTaskDelay(10 / portTICK_PERIOD_MS);
 
   // disable sleepEnabled
   ESP_ERROR_CHECK(set_sleep_enabled(false));
-  vTaskDelay(10 / portTICK_RATE_MS);
+  vTaskDelay(10 / portTICK_PERIOD_MS);
 
   ESP_LOGD(TAG, "END of MPU9250 initialization");
 
@@ -310,10 +310,10 @@ static esp_err_t enable_magnetometer(void)
   ESP_LOGI(TAG, "Enabling magnetometer");
 
   ESP_ERROR_CHECK(set_i2c_master_mode(false));
-  vTaskDelay(100 / portTICK_RATE_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
 
   ESP_ERROR_CHECK(set_bypass_enabled(true));
-  vTaskDelay(100 / portTICK_RATE_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
 
   bool is_enabled;
   ESP_ERROR_CHECK(get_bypass_enabled(&is_enabled));
