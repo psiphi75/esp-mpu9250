@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := mpu9250
+PROJECT_NAME := esp-mpu9250
 
 EXTRA_COMPONENT_DIRS := components/ahrs
 						components/mpu9250

@@ -1,5 +1,5 @@
 //=====================================================================================================
-// MadgwickAHRS.h
+// ahrs.h
 //=====================================================================================================
 //
 // Implementation of Madgwick's IMU and AHRS algorithms.
@@ -10,18 +10,18 @@
 // 02/10/2011	SOH Madgwick	Optimised for reduced CPU load
 //
 //=====================================================================================================
-#ifndef MadgwickAHRS_h
-#define MadgwickAHRS_h
+#ifndef AHRS_H
+#define AHRS_H
 
 //---------------------------------------------------------------------------------------------------
 // Function declarations
 
-void MadgwickAHRSinit(float sampleFreqDef, float betaDef);
-void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
-void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float az);
-void MadgwickGetEulerAnglesDegrees(float *heading, float *pitch, float *roll);
+void ahrs_init(float sampleFreqDef, float betaDef);
+void ahrs_update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
+void ahrs_update_imu(float gx, float gy, float gz, float ax, float ay, float az);
+void ahrs_get_euler_in_degrees(float *heading, float *pitch, float *roll);
 
-#endif
+#endif // AHRS_H
 //=====================================================================================================
 // End of file
 //=====================================================================================================

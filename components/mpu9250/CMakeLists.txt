@@ -3,4 +3,5 @@ idf_component_register(SRCS         "ak8963.c"
                                     "common.c"
                                     "i2c-easy.c"
                                     "mpu9250.c"
-                       INCLUDE_DIRS ".")
+                       INCLUDE_DIRS "include"
+                       REQUIRES driver)

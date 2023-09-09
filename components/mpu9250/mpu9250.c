@@ -23,7 +23,7 @@
 #include "mpu9250.h"
 #include "ak8963.h"
 
-#define I2C_MASTER_SCL_IO 22      /*!< gpio number for I2C master clock */
+#define I2C_MASTER_SCL_IO 22     /*!< gpio number for I2C master clock */
 #define I2C_MASTER_SDA_IO 21     /*!< gpio number for I2C master data  */
 #define I2C_MASTER_NUM I2C_NUM_0 /*!< I2C port number for master dev */
 
@@ -34,6 +34,13 @@ static calibration_t *cal;
 
 static float gyro_inv_scale = 1.0;
 static float accel_inv_scale = 1.0;
+
+typedef struct
+{
+  uint8_t x;
+  uint8_t y;
+  uint8_t z;
+} power_settings_e;
 
 static esp_err_t enable_magnetometer(void);
 
@@ -369,7 +376,7 @@ esp_err_t set_i2c_master_mode(bool state)
 /**
  * @name get_gyro_power_settings
  */
-esp_err_t get_gyro_power_settings(uint8_t bytes[3])
+esp_err_t get_gyro_power_settings(power_settings_e *ps)
 {
   uint8_t byte;
   esp_err_t ret = i2c_read_byte(I2C_MASTER_NUM, MPU9250_I2C_ADDR, MPU9250_RA_PWR_MGMT_2, &byte);
@@ -380,9 +387,9 @@ esp_err_t get_gyro_power_settings(uint8_t bytes[3])
 
   byte = byte & 0x07;
 
-  bytes[0] = (byte >> 2) & 1; // X
-  bytes[1] = (byte >> 1) & 1; // Y
-  bytes[2] = (byte >> 0) & 1; // Z
+  ps->x = (byte >> 2) & 1; // X
+  ps->y = (byte >> 1) & 1; // Y
+  ps->z = (byte >> 0) & 1; // Z
 
   return ESP_OK;
 }
@@ -390,7 +397,7 @@ esp_err_t get_gyro_power_settings(uint8_t bytes[3])
 /**
  * @name get_accel_power_settings
  */
-esp_err_t get_accel_power_settings(uint8_t bytes[3])
+esp_err_t get_accel_power_settings(power_settings_e *ps)
 {
   uint8_t byte;
   esp_err_t ret = i2c_read_byte(I2C_MASTER_NUM, MPU9250_I2C_ADDR, MPU9250_RA_PWR_MGMT_2, &byte);
@@ -401,9 +408,9 @@ esp_err_t get_accel_power_settings(uint8_t bytes[3])
 
   byte = byte & 0x38;
 
-  bytes[0] = (byte >> 5) & 1; // X
-  bytes[1] = (byte >> 4) & 1; // Y
-  bytes[2] = (byte >> 3) & 1; // Z
+  ps->x = (byte >> 5) & 1; // X
+  ps->y = (byte >> 4) & 1; // Y
+  ps->z = (byte >> 3) & 1; // Z
 
   return ESP_OK;
 }
@@ -450,17 +457,18 @@ esp_err_t get_full_scale_gyro_range(uint8_t *full_scale_gyro_range)
 
 #define YN(yn) (yn == 0 ? "Yes" : "No")
 
+const char *CLK_RNG[] = {
+    "0 (Internal 20MHz oscillator)",
+    "1 (Auto selects the best available clock source)",
+    "2 (Auto selects the best available clock source)",
+    "3 (Auto selects the best available clock source)",
+    "4 (Auto selects the best available clock source)",
+    "5 (Auto selects the best available clock source)",
+    "6 (Internal 20MHz oscillator)",
+    "7 (Stops the clock and keeps timing generator in reset)"};
+
 void mpu9250_print_settings(void)
 {
-  const char *CLK_RNG[] = {
-      "0 (Internal 20MHz oscillator)",
-      "1 (Auto selects the best available clock source)",
-      "2 (Auto selects the best available clock source)",
-      "3 (Auto selects the best available clock source)",
-      "4 (Auto selects the best available clock source)",
-      "5 (Auto selects the best available clock source)",
-      "6 (Internal 20MHz oscillator)",
-      "7 (Stops the clock and keeps timing generator in reset)"};
 
   uint8_t device_id;
   ESP_ERROR_CHECK(get_device_id(&device_id));
@@ -477,11 +485,11 @@ void mpu9250_print_settings(void)
   uint8_t clock_source;
   ESP_ERROR_CHECK(get_clock_source(&clock_source));
 
-  uint8_t accel_power_settings[3];
-  ESP_ERROR_CHECK(get_accel_power_settings(accel_power_settings));
+  power_settings_e accel_ps;
+  ESP_ERROR_CHECK(get_accel_power_settings(&accel_ps));
 
-  uint8_t gyro_power_settings[3];
-  ESP_ERROR_CHECK(get_gyro_power_settings(gyro_power_settings));
+  power_settings_e gyro_ps;
+  ESP_ERROR_CHECK(get_gyro_power_settings(&gyro_ps));
 
   ESP_LOGI(TAG, "MPU9250:");
   ESP_LOGI(TAG, "--> i2c bus: 0x%02x", I2C_MASTER_NUM);
@@ -492,21 +500,21 @@ void mpu9250_print_settings(void)
   ESP_LOGI(TAG, "--> SleepEnabled Mode: %s", sleep_enabled ? "On" : "Off");
   ESP_LOGI(TAG, "--> i2c Master Mode: %s", i2c_master_mode ? "Enabled" : "Disabled");
   ESP_LOGI(TAG, "--> Power Management (0x6B, 0x6C):");
-  ESP_LOGI(TAG, "  --> Clock Source: %s", CLK_RNG[clock_source]);
+  ESP_LOGI(TAG, "  --> Clock Source: %d %s", clock_source, CLK_RNG[clock_source]);
   ESP_LOGI(TAG, "  --> Accel enabled (x, y, z): (%s, %s, %s)",
-           YN(accel_power_settings[0]),
-           YN(accel_power_settings[1]),
-           YN(accel_power_settings[2]));
+           YN(accel_ps.x),
+           YN(accel_ps.y),
+           YN(accel_ps.z));
   ESP_LOGI(TAG, "  --> Gyro enabled (x, y, z): (%s, %s, %s)",
-           YN(gyro_power_settings[0]),
-           YN(gyro_power_settings[1]),
-           YN(gyro_power_settings[2]));
+           YN(gyro_ps.x),
+           YN(gyro_ps.y),
+           YN(gyro_ps.z));
 }
+
+const char *FS_RANGE[] = {"±2g (0)", "±4g (1)", "±8g (2)", "±16g (3)"};
 
 void print_accel_settings(void)
 {
-  const char *FS_RANGE[] = {"±2g (0)", "±4g (1)", "±8g (2)", "±16g (3)"};
-
   uint8_t full_scale_accel_range;
   ESP_ERROR_CHECK(get_full_scale_accel_range(&full_scale_accel_range));
 

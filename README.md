@@ -20,7 +20,7 @@ This code is based on the following: https://github.com/miniben-90/mpu9250
 ## Configure the project
 
 ```
-make menuconfig
+idf.py menuconfig
 ```
 
 A special "MPU9250 Configuration" menu is avialble. There is a calibration option which needs
@@ -44,6 +44,7 @@ calibration requirements:
 See the `calibration.c` file for details.
 
 ### Using the results
+
 You should consider increasing the monitor window's print buffer so that the large amount of printing for magnetometer does not override the other calibration output.
 
 Open the project configuration menu (`idf.py menuconfig`). Then go into `Example Configuration` menu.
@@ -59,7 +60,7 @@ After running the calibration, **copy and paste the values printed by the calibr
 Build the project and flash it to the board, then run monitor tool to view serial output:
 
 ```
-make -j4 flash monitor
+idf.py flash monitor
 ```
 
 (To exit the serial monitor, type `Ctrl-]`.)

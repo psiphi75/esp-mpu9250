@@ -3,13 +3,36 @@
         {
             "name": "Linux",
             "includePath": [
-                "${env.IDF_PATH}/components/"
+                "${env.IDF_PATH}/components/",
+                "${workspaceFolder}/components/ahrs/include",
+                "${workspaceFolder}/components/mpu9250/include",
+                "${workspaceFolder}/build/config/",
+                "/opt/esp/idf/components/log/include",
+                "/opt/esp/idf/components/driver/i2c/include",
+                "/opt/esp/idf/components/esp_common/include",
+                "/opt/esp/idf/components/esp_hw_support/include",
+                "/opt/esp/idf/components/esp_rom/include",
+                "/opt/esp/idf/components/soc/esp32/include",
+                "/opt/esp/idf/components/freertos/FreeRTOS-Kernel-SMP/include",
+                "/opt/esp/idf/components/freertos/esp_additions/include/freertos",
+                "/opt/esp/idf/components/freertos/esp_additions/arch/xtensa/include",
+                "/opt/esp/idf/components/freertos/FreeRTOS-Kernel-SMP/portable/xtensa/include",
+                "/opt/esp/idf/components/xtensa/include",
+                "/opt/esp/idf/components/xtensa/esp32/include",
+                "/opt/esp/idf/components/freertos/FreeRTOS-Kernel-SMP/portable/xtensa/include/freertos",
+                "/opt/esp/idf/components/esp_system/include",
+                "/opt/esp/idf/components/newlib/platform_include",
+                "/opt/esp/idf/components/heap/include",
+                "/opt/esp/idf/components/freertos/esp_additions/include",
+                "/opt/esp/idf/components/driver/gpio/include",
+                "/opt/esp/idf/components/hal/include"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },
-            "intelliSenseMode": "gcc-x64"
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/opt/esp/tools/xtensa-esp32-elf/esp-12.2.0_20230208/xtensa-esp32-elf/bin/xtensa-esp32-elf-g++"
         }
     ],
     "version": 4

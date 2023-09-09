@@ -21,6 +21,10 @@
 
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #define SAMPLE_FREQ_Hz (CONFIG_SAMPLE_RATE_Hz)
 #define SAMPLE_INTERVAL_MS (1000 / SAMPLE_FREQ_Hz) // Sample Rate in milliseconds
 

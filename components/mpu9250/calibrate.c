@@ -99,7 +99,7 @@ void calibrate_gyro(void)
 
     // Make the WDT happy
     if (i % 100 == 0)
-      esp_task_wdt_reset();
+      vTaskDelay(0);
 
     pause();
   }

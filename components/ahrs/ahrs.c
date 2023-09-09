@@ -1,5 +1,5 @@
 //=====================================================================================================
-// MadgwickAHRS.c
+// ahrs.c
 //=====================================================================================================
 //
 // Implementation of Madgwick's IMU and AHRS algorithms.
@@ -15,11 +15,11 @@
 //---------------------------------------------------------------------------------------------------
 // Header files
 
-#include "MadgwickAHRS.h"
+#include "ahrs.h"
 #include <math.h>
 
 #ifndef M_PI
-#define M_PI (3.14159265358979323846)
+#define M_PI 3.14159265358979323846
 #endif
 
 //---------------------------------------------------------------------------------------------------
@@ -29,15 +29,10 @@ volatile float sampleFreq = 50;                            // 2 * proportional g
 volatile float beta = 0.8;                                 // 2 * proportional gain (Kp)
 volatile float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f; // quaternion of sensor frame relative to auxiliary frame
 
-//---------------------------------------------------------------------------------------------------
-// Function declarations
-
-float invSqrt(float x);
-
 //====================================================================================================
 // Functions
 
-void MadgwickAHRSinit(float sampleFreqDef, float betaDef)
+void ahrs_init(float sampleFreqDef, float betaDef)
 {
   sampleFreq = sampleFreqDef;
   beta = betaDef;
@@ -46,7 +41,7 @@ void MadgwickAHRSinit(float sampleFreqDef, float betaDef)
 //---------------------------------------------------------------------------------------------------
 // AHRS algorithm update
 
-void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz)
+void ahrs_update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz)
 {
   float recipNorm;
   float s0, s1, s2, s3;
@@ -57,7 +52,7 @@ void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float 
   // Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)
   if ((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f))
   {
-    MadgwickAHRSupdateIMU(gx, gy, gz, ax, ay, az);
+    ahrs_update_imu(gx, gy, gz, ax, ay, az);
     return;
   }
 
@@ -72,13 +67,13 @@ void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float 
   {
 
     // Normalise accelerometer measurement
-    recipNorm = invSqrt(ax * ax + ay * ay + az * az);
+    recipNorm = 1.0 / sqrt(ax * ax + ay * ay + az * az);
     ax *= recipNorm;
     ay *= recipNorm;
     az *= recipNorm;
 
     // Normalise magnetometer measurement
-    recipNorm = invSqrt(mx * mx + my * my + mz * mz);
+    recipNorm = 1.0 / sqrt(mx * mx + my * my + mz * mz);
     mx *= recipNorm;
     my *= recipNorm;
     mz *= recipNorm;
@@ -118,7 +113,7 @@ void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float 
     s1 = _2q3 * (2.0f * q1q3 - _2q0q2 - ax) + _2q0 * (2.0f * q0q1 + _2q2q3 - ay) - 4.0f * q1 * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) + _2bz * q3 * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q2 + _2bz * q0) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q3 - _4bz * q1) * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
     s2 = -_2q0 * (2.0f * q1q3 - _2q0q2 - ax) + _2q3 * (2.0f * q0q1 + _2q2q3 - ay) - 4.0f * q2 * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) + (-_4bx * q2 - _2bz * q0) * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q1 + _2bz * q3) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q0 - _4bz * q2) * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
     s3 = _2q1 * (2.0f * q1q3 - _2q0q2 - ax) + _2q2 * (2.0f * q0q1 + _2q2q3 - ay) + (-_4bx * q3 + _2bz * q1) * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (-_2bx * q0 + _2bz * q2) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + _2bx * q1 * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
-    recipNorm = invSqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
+    recipNorm = 1.0 / sqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
     s0 *= recipNorm;
     s1 *= recipNorm;
     s2 *= recipNorm;
@@ -138,7 +133,7 @@ void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float 
   q3 += qDot4 * (1.0f / sampleFreq);
 
   // Normalise quaternion
-  recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+  recipNorm = 1.0 / sqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
   q0 *= recipNorm;
   q1 *= recipNorm;
   q2 *= recipNorm;
@@ -148,7 +143,7 @@ void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float 
 //---------------------------------------------------------------------------------------------------
 // IMU algorithm update
 
-void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float az)
+void ahrs_update_imu(float gx, float gy, float gz, float ax, float ay, float az)
 {
   float recipNorm;
   float s0, s1, s2, s3;
@@ -166,7 +161,7 @@ void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, flo
   {
 
     // Normalise accelerometer measurement
-    recipNorm = invSqrt(ax * ax + ay * ay + az * az);
+    recipNorm = 1.0 / sqrt(ax * ax + ay * ay + az * az);
     ax *= recipNorm;
     ay *= recipNorm;
     az *= recipNorm;
@@ -191,7 +186,7 @@ void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, flo
     s1 = _4q1 * q3q3 - _2q3 * ax + 4.0f * q0q0 * q1 - _2q0 * ay - _4q1 + _8q1 * q1q1 + _8q1 * q2q2 + _4q1 * az;
     s2 = 4.0f * q0q0 * q2 + _2q0 * ax + _4q2 * q3q3 - _2q3 * ay - _4q2 + _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * az;
     s3 = 4.0f * q1q1 * q3 - _2q1 * ax + 4.0f * q2q2 * q3 - _2q2 * ay;
-    recipNorm = invSqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
+    recipNorm = 1.0 / sqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
     s0 *= recipNorm;
     s1 *= recipNorm;
     s2 *= recipNorm;
@@ -223,15 +218,15 @@ void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, flo
  * in the following link: http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
  * @return {object} Normalised vector - {x, y, z, angle}
  */
-// void MadgwickGetVector(float *angle, float *x, float *y, float *z)
-// {
-//   float ang = 2.0 * acos(q0);
-//   float sin_angle = sin(ang / 2.0);
-//   *angle = ang;
-//   *x = q1 / sin_angle;
-//   *y = q2 / sin_angle;
-//   *z = q3 / sin_angle;
-// };
+void MadgwickGetVector(float *angle, float *x, float *y, float *z)
+{
+  float ang = 2.0 * acos(q0);
+  float sin_angle = sin(ang / 2.0);
+  *angle = ang;
+  *x = q1 / sin_angle;
+  *y = q2 / sin_angle;
+  *z = q3 / sin_angle;
+};
 
 float norm_angle_0_2pi(float a)
 {
@@ -279,7 +274,7 @@ void MadgwickGetEulerAngles(float *heading, float *pitch, float *roll)
  * @return {object} {heading, pitch, roll} in radians
  */
 #define RAD_2_DEG (180.0f / M_PI)
-void MadgwickGetEulerAnglesDegrees(float *heading, float *pitch, float *roll)
+void ahrs_get_euler_in_degrees(float *heading, float *pitch, float *roll)
 {
   MadgwickGetEulerAngles(heading, pitch, roll);
 
@@ -287,6 +282,7 @@ void MadgwickGetEulerAnglesDegrees(float *heading, float *pitch, float *roll)
   *pitch *= RAD_2_DEG;
   *roll *= RAD_2_DEG;
 }
+
 //====================================================================================================
 // END OF CODE
 //====================================================================================================

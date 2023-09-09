@@ -31,10 +31,10 @@
 
 #include "driver/i2c.h"
 
-#include "../components/ahrs/MadgwickAHRS.h"
-#include "../components/mpu9250/mpu9250.h"
-#include "../components/mpu9250/calibrate.h"
-#include "../components/mpu9250/common.h"
+#include "ahrs.h"
+#include "mpu9250.h"
+#include "calibrate.h"
+#include "common.h"
 
 static const char *TAG = "main";
 
@@ -87,7 +87,7 @@ void run_imu(void)
 {
 
   i2c_mpu9250_init(&cal);
-  MadgwickAHRSinit(SAMPLE_FREQ_Hz, 0.8);
+  ahrs_init(SAMPLE_FREQ_Hz, 0.8);
 
   uint64_t i = 0;
   while (true)
@@ -103,9 +103,9 @@ void run_imu(void)
     transform_mag(&vm);
 
     // Apply the AHRS algorithm
-    MadgwickAHRSupdate(DEG2RAD(vg.x), DEG2RAD(vg.y), DEG2RAD(vg.z),
-                       va.x, va.y, va.z,
-                       vm.x, vm.y, vm.z);
+    ahrs_update(DEG2RAD(vg.x), DEG2RAD(vg.y), DEG2RAD(vg.z),
+                va.x, va.y, va.z,
+                vm.x, vm.y, vm.z);
 
     // Print the data out every 10 items
     if (i++ % 10 == 0)
@@ -114,11 +114,11 @@ void run_imu(void)
       ESP_ERROR_CHECK(get_temperature_celsius(&temp));
 
       float heading, pitch, roll;
-      MadgwickGetEulerAnglesDegrees(&heading, &pitch, &roll);
+      ahrs_get_euler_in_degrees(&heading, &pitch, &roll);
       ESP_LOGI(TAG, "heading: %2.3f°, pitch: %2.3f°, roll: %2.3f°, Temp %2.3f°C", heading, pitch, roll, temp);
 
       // Make the WDT happy
-      esp_task_wdt_reset();
+      vTaskDelay(0);
     }
 
     pause();
@@ -146,5 +146,5 @@ static void imu_task(void *arg)
 void app_main(void)
 {
   // start i2c task
-  xTaskCreate(imu_task, "imu_task", 2048, NULL, 10, NULL);
+  xTaskCreate(imu_task, "imu_task", 4096, NULL, 10, NULL);
 }
